@@ -1,0 +1,28 @@
+version: 0.2
+
+phases: 
+    install:
+        runtime-versions:
+            nodejs: 12
+        commands:
+            - chmod +x getversion.sh
+            - TAG=$($CODEBUILD_SRC_DIR/getversion.sh)
+            - npm install
+            - echo "Installed Node Modules"
+    pre_build:
+        commands: 
+            - echo "we are in the pre build phase"
+    build:
+        commands:
+            - echo "npm run build"
+            - npm run build
+    post_build:
+        commands:
+            - echo "we are in the post build phase"
+artifacts:
+    files:
+        - 'build/**/*'
+        - 'appspec.yml'
+        - 'package.json'
+        - 'scripts/**/*'
+    name: $TAG-$(date +%Y-%m-%d-%H:%M:%S).zip
